@@ -2,22 +2,21 @@ package usecase
 
 import (
 	"context"
+	"github.com/bxcodec/go-clean-arch/domain/entities"
 	"time"
 
 	"github.com/sirupsen/logrus"
 	"golang.org/x/sync/errgroup"
-
-	"github.com/bxcodec/go-clean-arch/domain"
 )
 
 type articleUsecase struct {
-	articleRepo    domain.ArticleRepository
-	authorRepo     domain.AuthorRepository
+	articleRepo    entities.ArticleRepository
+	authorRepo     entities.AuthorRepository
 	contextTimeout time.Duration
 }
 
 // NewArticleUsecase will create new an articleUsecase object representation of domain.ArticleUsecase interface
-func NewArticleUsecase(a domain.ArticleRepository, ar domain.AuthorRepository, timeout time.Duration) domain.ArticleUsecase {
+func NewArticleUsecase(a entities.ArticleRepository, ar entities.AuthorRepository, timeout time.Duration) entities.ArticleUsecase {
 	return &articleUsecase{
 		articleRepo:    a,
 		authorRepo:     ar,
@@ -30,17 +29,17 @@ func NewArticleUsecase(a domain.ArticleRepository, ar domain.AuthorRepository, t
 * Look how this works in this package explanation
 * in godoc: https://godoc.org/golang.org/x/sync/errgroup#ex-Group--Pipeline
  */
-func (a *articleUsecase) fillAuthorDetails(c context.Context, data []domain.Article) ([]domain.Article, error) {
+func (a *articleUsecase) fillAuthorDetails(c context.Context, data []entities.Article) ([]entities.Article, error) {
 	g, ctx := errgroup.WithContext(c)
 
 	// Get the author's id
-	mapAuthors := map[int64]domain.Author{}
+	mapAuthors := map[int64]entities.Author{}
 
 	for _, article := range data {
-		mapAuthors[article.Author.ID] = domain.Author{}
+		mapAuthors[article.Author.ID] = entities.Author{}
 	}
 	// Using goroutine to fetch the author's detail
-	chanAuthor := make(chan domain.Author)
+	chanAuthor := make(chan entities.Author)
 	for authorID := range mapAuthors {
 		authorID := authorID
 		g.Go(func() error {
@@ -63,7 +62,7 @@ func (a *articleUsecase) fillAuthorDetails(c context.Context, data []domain.Arti
 	}()
 
 	for author := range chanAuthor {
-		if author != (domain.Author{}) {
+		if author != (entities.Author{}) {
 			mapAuthors[author.ID] = author
 		}
 	}
@@ -81,7 +80,7 @@ func (a *articleUsecase) fillAuthorDetails(c context.Context, data []domain.Arti
 	return data, nil
 }
 
-func (a *articleUsecase) Fetch(c context.Context, cursor string, num int64) (res []domain.Article, nextCursor string, err error) {
+func (a *articleUsecase) Fetch(c context.Context, cursor string, num int64) (res []entities.Article, nextCursor string, err error) {
 	if num == 0 {
 		num = 10
 	}
@@ -101,7 +100,7 @@ func (a *articleUsecase) Fetch(c context.Context, cursor string, num int64) (res
 	return
 }
 
-func (a *articleUsecase) GetByID(c context.Context, id int64) (res domain.Article, err error) {
+func (a *articleUsecase) GetByID(c context.Context, id int64) (res entities.Article, err error) {
 	ctx, cancel := context.WithTimeout(c, a.contextTimeout)
 	defer cancel()
 
@@ -112,13 +111,13 @@ func (a *articleUsecase) GetByID(c context.Context, id int64) (res domain.Articl
 
 	resAuthor, err := a.authorRepo.GetByID(ctx, res.Author.ID)
 	if err != nil {
-		return domain.Article{}, err
+		return entities.Article{}, err
 	}
 	res.Author = resAuthor
 	return
 }
 
-func (a *articleUsecase) Update(c context.Context, ar *domain.Article) (err error) {
+func (a *articleUsecase) Update(c context.Context, ar *entities.Article) (err error) {
 	ctx, cancel := context.WithTimeout(c, a.contextTimeout)
 	defer cancel()
 
@@ -126,7 +125,7 @@ func (a *articleUsecase) Update(c context.Context, ar *domain.Article) (err erro
 	return a.articleRepo.Update(ctx, ar)
 }
 
-func (a *articleUsecase) GetByTitle(c context.Context, title string) (res domain.Article, err error) {
+func (a *articleUsecase) GetByTitle(c context.Context, title string) (res entities.Article, err error) {
 	ctx, cancel := context.WithTimeout(c, a.contextTimeout)
 	defer cancel()
 	res, err = a.articleRepo.GetByTitle(ctx, title)
@@ -136,19 +135,19 @@ func (a *articleUsecase) GetByTitle(c context.Context, title string) (res domain
 
 	resAuthor, err := a.authorRepo.GetByID(ctx, res.Author.ID)
 	if err != nil {
-		return domain.Article{}, err
+		return entities.Article{}, err
 	}
 
 	res.Author = resAuthor
 	return
 }
 
-func (a *articleUsecase) Store(c context.Context, m *domain.Article) (err error) {
+func (a *articleUsecase) Store(c context.Context, m *entities.Article) (err error) {
 	ctx, cancel := context.WithTimeout(c, a.contextTimeout)
 	defer cancel()
 	existedArticle, _ := a.GetByTitle(ctx, m.Title)
-	if existedArticle != (domain.Article{}) {
-		return domain.ErrConflict
+	if existedArticle != (entities.Article{}) {
+		return entities.ErrConflict
 	}
 
 	err = a.articleRepo.Store(ctx, m)
@@ -162,8 +161,8 @@ func (a *articleUsecase) Delete(c context.Context, id int64) (err error) {
 	if err != nil {
 		return
 	}
-	if existedArticle == (domain.Article{}) {
-		return domain.ErrNotFound
+	if existedArticle == (entities.Article{}) {
+		return entities.ErrNotFound
 	}
 	return a.articleRepo.Delete(ctx, id)
 }

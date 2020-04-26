@@ -1,14 +1,13 @@
 package http
 
 import (
+	"github.com/bxcodec/go-clean-arch/domain/entities"
 	"net/http"
 	"strconv"
 
 	"github.com/labstack/echo"
 	"github.com/sirupsen/logrus"
 	validator "gopkg.in/go-playground/validator.v9"
-
-	"github.com/bxcodec/go-clean-arch/domain"
 )
 
 // ResponseError represent the reseponse error struct
@@ -18,11 +17,11 @@ type ResponseError struct {
 
 // ArticleHandler  represent the httphandler for article
 type ArticleHandler struct {
-	AUsecase domain.ArticleUsecase
+	AUsecase entities.ArticleUsecase
 }
 
 // NewArticleHandler will initialize the articles/ resources endpoint
-func NewArticleHandler(e *echo.Echo, us domain.ArticleUsecase) {
+func NewArticleHandler(e *echo.Echo, us entities.ArticleUsecase) {
 	handler := &ArticleHandler{
 		AUsecase: us,
 	}
@@ -52,7 +51,7 @@ func (a *ArticleHandler) FetchArticle(c echo.Context) error {
 func (a *ArticleHandler) GetByID(c echo.Context) error {
 	idP, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return c.JSON(http.StatusNotFound, domain.ErrNotFound.Error())
+		return c.JSON(http.StatusNotFound, entities.ErrNotFound.Error())
 	}
 
 	id := int64(idP)
@@ -66,7 +65,7 @@ func (a *ArticleHandler) GetByID(c echo.Context) error {
 	return c.JSON(http.StatusOK, art)
 }
 
-func isRequestValid(m *domain.Article) (bool, error) {
+func isRequestValid(m *entities.Article) (bool, error) {
 	validate := validator.New()
 	err := validate.Struct(m)
 	if err != nil {
@@ -77,7 +76,7 @@ func isRequestValid(m *domain.Article) (bool, error) {
 
 // Store will store the article by given request body
 func (a *ArticleHandler) Store(c echo.Context) (err error) {
-	var article domain.Article
+	var article entities.Article
 	err = c.Bind(&article)
 	if err != nil {
 		return c.JSON(http.StatusUnprocessableEntity, err.Error())
@@ -101,7 +100,7 @@ func (a *ArticleHandler) Store(c echo.Context) (err error) {
 func (a *ArticleHandler) Delete(c echo.Context) error {
 	idP, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return c.JSON(http.StatusNotFound, domain.ErrNotFound.Error())
+		return c.JSON(http.StatusNotFound, entities.ErrNotFound.Error())
 	}
 
 	id := int64(idP)
@@ -122,11 +121,11 @@ func getStatusCode(err error) int {
 
 	logrus.Error(err)
 	switch err {
-	case domain.ErrInternalServerError:
+	case entities.ErrInternalServerError:
 		return http.StatusInternalServerError
-	case domain.ErrNotFound:
+	case entities.ErrNotFound:
 		return http.StatusNotFound
-	case domain.ErrConflict:
+	case entities.ErrConflict:
 		return http.StatusConflict
 	default:
 		return http.StatusInternalServerError

@@ -2,6 +2,7 @@ package mysql_test
 
 import (
 	"context"
+	"github.com/bxcodec/go-clean-arch/domain/entities"
 	"testing"
 	"time"
 
@@ -10,7 +11,6 @@ import (
 
 	"github.com/bxcodec/go-clean-arch/article/repository"
 	articleMysqlRepo "github.com/bxcodec/go-clean-arch/article/repository/mysql"
-	"github.com/bxcodec/go-clean-arch/domain"
 )
 
 func TestFetch(t *testing.T) {
@@ -19,14 +19,14 @@ func TestFetch(t *testing.T) {
 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
 	}
 
-	mockArticles := []domain.Article{
-		domain.Article{
+	mockArticles := []entities.Article{
+		entities.Article{
 			ID: 1, Title: "title 1", Content: "content 1",
-			Author: domain.Author{ID: 1}, UpdatedAt: time.Now(), CreatedAt: time.Now(),
+			Author: entities.Author{ID: 1}, UpdatedAt: time.Now(), CreatedAt: time.Now(),
 		},
-		domain.Article{
+		entities.Article{
 			ID: 2, Title: "title 2", Content: "content 2",
-			Author: domain.Author{ID: 1}, UpdatedAt: time.Now(), CreatedAt: time.Now(),
+			Author: entities.Author{ID: 1}, UpdatedAt: time.Now(), CreatedAt: time.Now(),
 		},
 	}
 
@@ -70,12 +70,12 @@ func TestGetByID(t *testing.T) {
 
 func TestStore(t *testing.T) {
 	now := time.Now()
-	ar := &domain.Article{
+	ar := &entities.Article{
 		Title:     "Judul",
 		Content:   "Content",
 		CreatedAt: now,
 		UpdatedAt: now,
-		Author: domain.Author{
+		Author: entities.Author{
 			ID:   1,
 			Name: "Iman Tumorang",
 		},
@@ -136,13 +136,13 @@ func TestDelete(t *testing.T) {
 
 func TestUpdate(t *testing.T) {
 	now := time.Now()
-	ar := &domain.Article{
+	ar := &entities.Article{
 		ID:        12,
 		Title:     "Judul",
 		Content:   "Content",
 		CreatedAt: now,
 		UpdatedAt: now,
-		Author: domain.Author{
+		Author: entities.Author{
 			ID:   1,
 			Name: "Iman Tumorang",
 		},

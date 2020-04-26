@@ -2,6 +2,7 @@ package http_test
 
 import (
 	"encoding/json"
+	"github.com/bxcodec/go-clean-arch/domain/entities"
 	"net/http"
 	"net/http/httptest"
 	"strconv"
@@ -16,16 +17,15 @@ import (
 	"github.com/stretchr/testify/require"
 
 	articleHttp "github.com/bxcodec/go-clean-arch/article/delivery/http"
-	"github.com/bxcodec/go-clean-arch/domain"
 	"github.com/bxcodec/go-clean-arch/domain/mocks"
 )
 
 func TestFetch(t *testing.T) {
-	var mockArticle domain.Article
+	var mockArticle entities.Article
 	err := faker.FakeData(&mockArticle)
 	assert.NoError(t, err)
 	mockUCase := new(mocks.ArticleUsecase)
-	mockListArticle := make([]domain.Article, 0)
+	mockListArticle := make([]entities.Article, 0)
 	mockListArticle = append(mockListArticle, mockArticle)
 	num := 1
 	cursor := "2"
@@ -53,7 +53,7 @@ func TestFetchError(t *testing.T) {
 	mockUCase := new(mocks.ArticleUsecase)
 	num := 1
 	cursor := "2"
-	mockUCase.On("Fetch", mock.Anything, cursor, int64(num)).Return(nil, "", domain.ErrInternalServerError)
+	mockUCase.On("Fetch", mock.Anything, cursor, int64(num)).Return(nil, "", entities.ErrInternalServerError)
 
 	e := echo.New()
 	req, err := http.NewRequest(echo.GET, "/article?num=1&cursor="+cursor, strings.NewReader(""))
@@ -74,7 +74,7 @@ func TestFetchError(t *testing.T) {
 }
 
 func TestGetByID(t *testing.T) {
-	var mockArticle domain.Article
+	var mockArticle entities.Article
 	err := faker.FakeData(&mockArticle)
 	assert.NoError(t, err)
 
@@ -104,7 +104,7 @@ func TestGetByID(t *testing.T) {
 }
 
 func TestStore(t *testing.T) {
-	mockArticle := domain.Article{
+	mockArticle := entities.Article{
 		Title:     "Title",
 		Content:   "Content",
 		CreatedAt: time.Now(),
@@ -140,7 +140,7 @@ func TestStore(t *testing.T) {
 }
 
 func TestDelete(t *testing.T) {
-	var mockArticle domain.Article
+	var mockArticle entities.Article
 	err := faker.FakeData(&mockArticle)
 	assert.NoError(t, err)
 
