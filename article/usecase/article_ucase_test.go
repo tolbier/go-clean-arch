@@ -119,7 +119,7 @@ func TestStore(t *testing.T) {
 		tempMockArticle := mockArticle
 		tempMockArticle.ID = 0
 		mockArticleRepo.On("GetByTitle", mock.Anything, mock.AnythingOfType("string")).Return(entities.Article{}, entities.ErrNotFound).Once()
-		mockArticleRepo.On("Store", mock.Anything, mock.AnythingOfType("*domain.Article")).Return(nil).Once()
+		mockArticleRepo.On("Store", mock.Anything, mock.AnythingOfType("*entities.Article")).Return(nil).Once()
 
 		mockAuthorrepo := new(mocks.AuthorRepository)
 		u := ucase.NewArticleUsecase(mockArticleRepo, mockAuthorrepo, time.Second*2)
