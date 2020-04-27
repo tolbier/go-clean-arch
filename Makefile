@@ -1,5 +1,11 @@
 BINARY=engine
-test: 
+
+# need to be installed locally and loaded under $PATH
+mockery:
+	rm -rf ./mocks
+	@mockery -output ./mocks/ -all -keeptree
+
+test:
 	go test -v -cover -covermode=atomic ./...
 
 engine:
