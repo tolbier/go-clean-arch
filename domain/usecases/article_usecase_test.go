@@ -1,8 +1,9 @@
-package usecase_test
+package usecases_test
 
 import (
 	"context"
 	"errors"
+	"github.com/bxcodec/go-clean-arch/domain"
 	"github.com/bxcodec/go-clean-arch/domain/entities"
 	"testing"
 	"time"
@@ -10,8 +11,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
-	ucase "github.com/bxcodec/go-clean-arch/article/usecase"
 	"github.com/bxcodec/go-clean-arch/domain/mocks"
+	ucase "github.com/bxcodec/go-clean-arch/domain/usecases"
 )
 
 func TestFetch(t *testing.T) {
@@ -118,7 +119,7 @@ func TestStore(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		tempMockArticle := mockArticle
 		tempMockArticle.ID = 0
-		mockArticleRepo.On("GetByTitle", mock.Anything, mock.AnythingOfType("string")).Return(entities.Article{}, entities.ErrNotFound).Once()
+		mockArticleRepo.On("GetByTitle", mock.Anything, mock.AnythingOfType("string")).Return(entities.Article{}, domain.ErrNotFound).Once()
 		mockArticleRepo.On("Store", mock.Anything, mock.AnythingOfType("*entities.Article")).Return(nil).Once()
 
 		mockAuthorrepo := new(mocks.AuthorRepository)

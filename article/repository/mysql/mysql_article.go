@@ -4,7 +4,9 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"github.com/bxcodec/go-clean-arch/domain"
 	"github.com/bxcodec/go-clean-arch/domain/entities"
+	"github.com/bxcodec/go-clean-arch/domain/repositories"
 
 	"github.com/sirupsen/logrus"
 
@@ -16,7 +18,7 @@ type mysqlArticleRepository struct {
 }
 
 // NewMysqlArticleRepository will create an object that represent the article.Repository interface
-func NewMysqlArticleRepository(Conn *sql.DB) entities.ArticleRepository {
+func NewMysqlArticleRepository(Conn *sql.DB) repositories.ArticleRepository {
 	return &mysqlArticleRepository{Conn}
 }
 
@@ -66,7 +68,7 @@ func (m *mysqlArticleRepository) Fetch(ctx context.Context, cursor string, num i
 
 	decodedCursor, err := repository.DecodeCursor(cursor)
 	if err != nil && cursor != "" {
-		return nil, "", entities.ErrBadParamInput
+		return nil, "", domain.ErrBadParamInput
 	}
 
 	res, err = m.fetch(ctx, query, decodedCursor, num)
@@ -92,7 +94,7 @@ func (m *mysqlArticleRepository) GetByID(ctx context.Context, id int64) (res ent
 	if len(list) > 0 {
 		res = list[0]
 	} else {
-		return res, entities.ErrNotFound
+		return res, domain.ErrNotFound
 	}
 
 	return
@@ -110,7 +112,7 @@ func (m *mysqlArticleRepository) GetByTitle(ctx context.Context, title string) (
 	if len(list) > 0 {
 		res = list[0]
 	} else {
-		return res, entities.ErrNotFound
+		return res, domain.ErrNotFound
 	}
 	return
 }

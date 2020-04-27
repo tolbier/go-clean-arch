@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"github.com/bxcodec/go-clean-arch/domain/entities"
+	"github.com/bxcodec/go-clean-arch/domain/repositories"
 )
 
 type mysqlAuthorRepo struct {
@@ -11,7 +12,7 @@ type mysqlAuthorRepo struct {
 }
 
 // NewMysqlAuthorRepository will create an implementation of author.Repository
-func NewMysqlAuthorRepository(db *sql.DB) entities.AuthorRepository {
+func NewMysqlAuthorRepository(db *sql.DB) repositories.AuthorRepository {
 	return &mysqlAuthorRepo{
 		DB: db,
 	}

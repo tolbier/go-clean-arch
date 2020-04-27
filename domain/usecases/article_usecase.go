@@ -1,22 +1,34 @@
-package usecase
+package usecases
 
 import (
 	"context"
+	"github.com/bxcodec/go-clean-arch/domain"
 	"github.com/bxcodec/go-clean-arch/domain/entities"
+	"github.com/bxcodec/go-clean-arch/domain/repositories"
 	"time"
 
 	"github.com/sirupsen/logrus"
 	"golang.org/x/sync/errgroup"
 )
 
+// ArticleUsecase represent the article's usecases
+type ArticleUsecase interface {
+	Fetch(ctx context.Context, cursor string, num int64) ([]entities.Article, string, error)
+	GetByID(ctx context.Context, id int64) (entities.Article, error)
+	Update(ctx context.Context, ar *entities.Article) error
+	GetByTitle(ctx context.Context, title string) (entities.Article, error)
+	Store(context.Context, *entities.Article) error
+	Delete(ctx context.Context, id int64) error
+}
+
 type articleUsecase struct {
-	articleRepo    entities.ArticleRepository
-	authorRepo     entities.AuthorRepository
+	articleRepo    repositories.ArticleRepository
+	authorRepo     repositories.AuthorRepository
 	contextTimeout time.Duration
 }
 
 // NewArticleUsecase will create new an articleUsecase object representation of domain.ArticleUsecase interface
-func NewArticleUsecase(a entities.ArticleRepository, ar entities.AuthorRepository, timeout time.Duration) entities.ArticleUsecase {
+func NewArticleUsecase(a repositories.ArticleRepository, ar repositories.AuthorRepository, timeout time.Duration) ArticleUsecase {
 	return &articleUsecase{
 		articleRepo:    a,
 		authorRepo:     ar,
@@ -147,7 +159,7 @@ func (a *articleUsecase) Store(c context.Context, m *entities.Article) (err erro
 	defer cancel()
 	existedArticle, _ := a.GetByTitle(ctx, m.Title)
 	if existedArticle != (entities.Article{}) {
-		return entities.ErrConflict
+		return domain.ErrConflict
 	}
 
 	err = a.articleRepo.Store(ctx, m)
@@ -162,7 +174,7 @@ func (a *articleUsecase) Delete(c context.Context, id int64) (err error) {
 		return
 	}
 	if existedArticle == (entities.Article{}) {
-		return entities.ErrNotFound
+		return domain.ErrNotFound
 	}
 	return a.articleRepo.Delete(ctx, id)
 }

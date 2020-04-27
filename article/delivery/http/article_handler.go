@@ -1,7 +1,9 @@
 package http
 
 import (
+	"github.com/bxcodec/go-clean-arch/domain"
 	"github.com/bxcodec/go-clean-arch/domain/entities"
+	"github.com/bxcodec/go-clean-arch/domain/usecases"
 	"net/http"
 	"strconv"
 
@@ -17,11 +19,11 @@ type ResponseError struct {
 
 // ArticleHandler  represent the httphandler for article
 type ArticleHandler struct {
-	AUsecase entities.ArticleUsecase
+	AUsecase usecases.ArticleUsecase
 }
 
 // NewArticleHandler will initialize the articles/ resources endpoint
-func NewArticleHandler(e *echo.Echo, us entities.ArticleUsecase) {
+func NewArticleHandler(e *echo.Echo, us usecases.ArticleUsecase) {
 	handler := &ArticleHandler{
 		AUsecase: us,
 	}
@@ -51,7 +53,7 @@ func (a *ArticleHandler) FetchArticle(c echo.Context) error {
 func (a *ArticleHandler) GetByID(c echo.Context) error {
 	idP, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return c.JSON(http.StatusNotFound, entities.ErrNotFound.Error())
+		return c.JSON(http.StatusNotFound, domain.ErrNotFound.Error())
 	}
 
 	id := int64(idP)
@@ -100,7 +102,7 @@ func (a *ArticleHandler) Store(c echo.Context) (err error) {
 func (a *ArticleHandler) Delete(c echo.Context) error {
 	idP, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return c.JSON(http.StatusNotFound, entities.ErrNotFound.Error())
+		return c.JSON(http.StatusNotFound, domain.ErrNotFound.Error())
 	}
 
 	id := int64(idP)
@@ -121,11 +123,11 @@ func getStatusCode(err error) int {
 
 	logrus.Error(err)
 	switch err {
-	case entities.ErrInternalServerError:
+	case domain.ErrInternalServerError:
 		return http.StatusInternalServerError
-	case entities.ErrNotFound:
+	case domain.ErrNotFound:
 		return http.StatusNotFound
-	case entities.ErrConflict:
+	case domain.ErrConflict:
 		return http.StatusConflict
 	default:
 		return http.StatusInternalServerError

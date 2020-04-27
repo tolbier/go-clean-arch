@@ -14,8 +14,8 @@ import (
 	_articleHttpDelivery "github.com/bxcodec/go-clean-arch/article/delivery/http"
 	_articleHttpDeliveryMiddleware "github.com/bxcodec/go-clean-arch/article/delivery/http/middleware"
 	_articleRepo "github.com/bxcodec/go-clean-arch/article/repository/mysql"
-	_articleUcase "github.com/bxcodec/go-clean-arch/article/usecase"
 	_authorRepo "github.com/bxcodec/go-clean-arch/author/repository/mysql"
+	_articleUcase "github.com/bxcodec/go-clean-arch/domain/usecases"
 )
 
 func init() {
