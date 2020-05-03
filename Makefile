@@ -3,7 +3,7 @@ BINARY=engine
 # need to be installed locally and loaded under $PATH
 mockery:
 	rm -rf ./mocks
-	@mockery -output ./mocks/ -all -keeptree
+	@mockery -output ./mocks/ -all -keeptree -case snake
 
 test:
 	go test -v -cover -covermode=atomic ./...

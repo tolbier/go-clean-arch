@@ -1,18 +1,17 @@
-package usecases_test
+package article_test
 
 import (
-	"context"
-	"errors"
-	"github.com/bxcodec/go-clean-arch/domain"
-	"github.com/bxcodec/go-clean-arch/domain/entities"
-	. "github.com/bxcodec/go-clean-arch/mocks/domain/repositories"
-	"testing"
-	"time"
+    "context"
+    "errors"
+    "github.com/tolbier/go-clean-arch/domain"
+    "github.com/tolbier/go-clean-arch/domain/entities"
+    "github.com/tolbier/go-clean-arch/domain/usecases/article"
+    . "github.com/tolbier/go-clean-arch/mocks/domain/repositories"
+    "testing"
+    "time"
 
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
-
-	ucase "github.com/bxcodec/go-clean-arch/domain/usecases"
+    "github.com/stretchr/testify/assert"
+    "github.com/stretchr/testify/mock"
 )
 
 func TestFetch(t *testing.T) {
@@ -34,7 +33,7 @@ func TestFetch(t *testing.T) {
 		}
 		mockAuthorrepo := new(AuthorRepository)
 		mockAuthorrepo.On("GetByID", mock.Anything, mock.AnythingOfType("int64")).Return(mockAuthor, nil)
-		u := ucase.NewArticleUsecase(mockArticleRepo, mockAuthorrepo, time.Second*2)
+		u := article.NewUsecase(mockArticleRepo, mockAuthorrepo, time.Second*2)
 		num := int64(1)
 		cursor := "12"
 		list, nextCursor, err := u.Fetch(context.TODO(), cursor, num)
@@ -53,7 +52,7 @@ func TestFetch(t *testing.T) {
 			mock.AnythingOfType("int64")).Return(nil, "", errors.New("Unexpexted Error")).Once()
 
 		mockAuthorrepo := new(AuthorRepository)
-		u := ucase.NewArticleUsecase(mockArticleRepo, mockAuthorrepo, time.Second*2)
+		u := article.NewUsecase(mockArticleRepo, mockAuthorrepo, time.Second*2)
 		num := int64(1)
 		cursor := "12"
 		list, nextCursor, err := u.Fetch(context.TODO(), cursor, num)
@@ -82,7 +81,7 @@ func TestGetByID(t *testing.T) {
 		mockArticleRepo.On("GetByID", mock.Anything, mock.AnythingOfType("int64")).Return(mockArticle, nil).Once()
 		mockAuthorrepo := new(AuthorRepository)
 		mockAuthorrepo.On("GetByID", mock.Anything, mock.AnythingOfType("int64")).Return(mockAuthor, nil)
-		u := ucase.NewArticleUsecase(mockArticleRepo, mockAuthorrepo, time.Second*2)
+		u := article.NewUsecase(mockArticleRepo, mockAuthorrepo, time.Second*2)
 
 		a, err := u.GetByID(context.TODO(), mockArticle.ID)
 
@@ -96,7 +95,7 @@ func TestGetByID(t *testing.T) {
 		mockArticleRepo.On("GetByID", mock.Anything, mock.AnythingOfType("int64")).Return(entities.Article{}, errors.New("Unexpected")).Once()
 
 		mockAuthorrepo := new(AuthorRepository)
-		u := ucase.NewArticleUsecase(mockArticleRepo, mockAuthorrepo, time.Second*2)
+		u := article.NewUsecase(mockArticleRepo, mockAuthorrepo, time.Second*2)
 
 		a, err := u.GetByID(context.TODO(), mockArticle.ID)
 
@@ -123,7 +122,7 @@ func TestStore(t *testing.T) {
 		mockArticleRepo.On("Store", mock.Anything, mock.AnythingOfType("*entities.Article")).Return(nil).Once()
 
 		mockAuthorrepo := new(AuthorRepository)
-		u := ucase.NewArticleUsecase(mockArticleRepo, mockAuthorrepo, time.Second*2)
+		u := article.NewUsecase(mockArticleRepo, mockAuthorrepo, time.Second*2)
 
 		err := u.Store(context.TODO(), &tempMockArticle)
 
@@ -141,7 +140,7 @@ func TestStore(t *testing.T) {
 		mockAuthorrepo := new(AuthorRepository)
 		mockAuthorrepo.On("GetByID", mock.Anything, mock.AnythingOfType("int64")).Return(mockAuthor, nil)
 
-		u := ucase.NewArticleUsecase(mockArticleRepo, mockAuthorrepo, time.Second*2)
+		u := article.NewUsecase(mockArticleRepo, mockAuthorrepo, time.Second*2)
 
 		err := u.Store(context.TODO(), &mockArticle)
 
@@ -165,7 +164,7 @@ func TestDelete(t *testing.T) {
 		mockArticleRepo.On("Delete", mock.Anything, mock.AnythingOfType("int64")).Return(nil).Once()
 
 		mockAuthorrepo := new(AuthorRepository)
-		u := ucase.NewArticleUsecase(mockArticleRepo, mockAuthorrepo, time.Second*2)
+		u := article.NewUsecase(mockArticleRepo, mockAuthorrepo, time.Second*2)
 
 		err := u.Delete(context.TODO(), mockArticle.ID)
 
@@ -177,7 +176,7 @@ func TestDelete(t *testing.T) {
 		mockArticleRepo.On("GetByID", mock.Anything, mock.AnythingOfType("int64")).Return(entities.Article{}, nil).Once()
 
 		mockAuthorrepo := new(AuthorRepository)
-		u := ucase.NewArticleUsecase(mockArticleRepo, mockAuthorrepo, time.Second*2)
+		u := article.NewUsecase(mockArticleRepo, mockAuthorrepo, time.Second*2)
 
 		err := u.Delete(context.TODO(), mockArticle.ID)
 
@@ -189,7 +188,7 @@ func TestDelete(t *testing.T) {
 		mockArticleRepo.On("GetByID", mock.Anything, mock.AnythingOfType("int64")).Return(entities.Article{}, errors.New("Unexpected Error")).Once()
 
 		mockAuthorrepo := new(AuthorRepository)
-		u := ucase.NewArticleUsecase(mockArticleRepo, mockAuthorrepo, time.Second*2)
+		u := article.NewUsecase(mockArticleRepo, mockAuthorrepo, time.Second*2)
 
 		err := u.Delete(context.TODO(), mockArticle.ID)
 
@@ -212,7 +211,7 @@ func TestUpdate(t *testing.T) {
 		mockArticleRepo.On("Update", mock.Anything, &mockArticle).Once().Return(nil)
 
 		mockAuthorrepo := new(AuthorRepository)
-		u := ucase.NewArticleUsecase(mockArticleRepo, mockAuthorrepo, time.Second*2)
+		u := article.NewUsecase(mockArticleRepo, mockAuthorrepo, time.Second*2)
 
 		err := u.Update(context.TODO(), &mockArticle)
 		assert.NoError(t, err)

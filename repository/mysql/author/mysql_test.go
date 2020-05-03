@@ -1,14 +1,13 @@
-package mysql_test
+package author_test
 
 import (
-	"context"
-	"testing"
-	"time"
+    "context"
+    "github.com/tolbier/go-clean-arch/repository/mysql/author"
+    "testing"
+    "time"
 
-	"github.com/stretchr/testify/assert"
-	sqlmock "gopkg.in/DATA-DOG/go-sqlmock.v1"
-
-	repository "github.com/bxcodec/go-clean-arch/author/repository/mysql"
+    "github.com/stretchr/testify/assert"
+    sqlmock "gopkg.in/DATA-DOG/go-sqlmock.v1"
 )
 
 func TestGetByID(t *testing.T) {
@@ -26,7 +25,7 @@ func TestGetByID(t *testing.T) {
 	userID := int64(1)
 	prep.ExpectQuery().WithArgs(userID).WillReturnRows(rows)
 
-	a := repository.NewMysqlAuthorRepository(db)
+	a := author.NewMysqlAuthorRepository(db)
 
 	anArticle, err := a.GetByID(context.TODO(), userID)
 	assert.NoError(t, err)

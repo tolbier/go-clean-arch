@@ -1,16 +1,16 @@
-package mysql
+package article
 
 import (
-	"context"
+    "context"
 	"database/sql"
 	"fmt"
-	"github.com/bxcodec/go-clean-arch/domain"
-	"github.com/bxcodec/go-clean-arch/domain/entities"
-	"github.com/bxcodec/go-clean-arch/domain/repositories"
+	"github.com/tolbier/go-clean-arch/domain"
+	"github.com/tolbier/go-clean-arch/domain/entities"
+	"github.com/tolbier/go-clean-arch/domain/repositories"
 
 	"github.com/sirupsen/logrus"
 
-	"github.com/bxcodec/go-clean-arch/article/repository"
+    "github.com/tolbier/go-clean-arch/lib/repository"
 )
 
 type mysqlArticleRepository struct {

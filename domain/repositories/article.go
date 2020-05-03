@@ -2,7 +2,7 @@ package repositories
 
 import (
 	"context"
-	. "github.com/bxcodec/go-clean-arch/domain/entities"
+	. "github.com/tolbier/go-clean-arch/domain/entities"
 )
 
 // ArticleRepository represent the article's repository contract

@@ -1,10 +1,10 @@
-package mysql
+package author
 
 import (
-	"context"
+    "context"
 	"database/sql"
-	"github.com/bxcodec/go-clean-arch/domain/entities"
-	"github.com/bxcodec/go-clean-arch/domain/repositories"
+	"github.com/tolbier/go-clean-arch/domain/entities"
+	"github.com/tolbier/go-clean-arch/domain/repositories"
 )
 
 type mysqlAuthorRepo struct {

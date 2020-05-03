@@ -1,15 +1,15 @@
-package http
+package article
 
 import (
-	"github.com/bxcodec/go-clean-arch/domain"
-	"github.com/bxcodec/go-clean-arch/domain/entities"
-	"github.com/bxcodec/go-clean-arch/domain/usecases"
-	"net/http"
-	"strconv"
+    "github.com/tolbier/go-clean-arch/domain"
+    "github.com/tolbier/go-clean-arch/domain/entities"
+    "github.com/tolbier/go-clean-arch/domain/usecases/article"
+    "net/http"
+    "strconv"
 
-	"github.com/labstack/echo"
-	"github.com/sirupsen/logrus"
-	validator "gopkg.in/go-playground/validator.v9"
+    "github.com/labstack/echo"
+    "github.com/sirupsen/logrus"
+    validator "gopkg.in/go-playground/validator.v9"
 )
 
 // ResponseError represent the reseponse error struct
@@ -19,11 +19,11 @@ type ResponseError struct {
 
 // ArticleHandler  represent the httphandler for article
 type ArticleHandler struct {
-	AUsecase usecases.ArticleUsecase
+	AUsecase article.Usecase
 }
 
 // NewArticleHandler will initialize the articles/ resources endpoint
-func NewArticleHandler(e *echo.Echo, us usecases.ArticleUsecase) {
+func NewArticleHandler(e *echo.Echo, us article.Usecase) {
 	handler := &ArticleHandler{
 		AUsecase: us,
 	}

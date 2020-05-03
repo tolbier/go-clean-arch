@@ -1,21 +1,21 @@
 package main
 
 import (
-	"database/sql"
-	"fmt"
-	"log"
-	"net/url"
-	"time"
+    "database/sql"
+    "fmt"
+    article3 "github.com/tolbier/go-clean-arch/delivery/http/article"
+    article2 "github.com/tolbier/go-clean-arch/domain/usecases/article"
+    "github.com/tolbier/go-clean-arch/repository/mysql/article"
+    "github.com/tolbier/go-clean-arch/repository/mysql/author"
+    "log"
+    "net/url"
+    "time"
 
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/labstack/echo"
-	"github.com/spf13/viper"
+    _ "github.com/go-sql-driver/mysql"
+    "github.com/labstack/echo"
+    "github.com/spf13/viper"
 
-	_articleHttpDelivery "github.com/bxcodec/go-clean-arch/article/delivery/http"
-	_articleHttpDeliveryMiddleware "github.com/bxcodec/go-clean-arch/article/delivery/http/middleware"
-	_articleRepo "github.com/bxcodec/go-clean-arch/article/repository/mysql"
-	_authorRepo "github.com/bxcodec/go-clean-arch/author/repository/mysql"
-	_articleUcase "github.com/bxcodec/go-clean-arch/domain/usecases"
+    _articleHttpDeliveryMiddleware "github.com/tolbier/go-clean-arch/delivery/http/middleware"
 )
 
 func init() {
@@ -61,12 +61,12 @@ func main() {
 	e := echo.New()
 	middL := _articleHttpDeliveryMiddleware.InitMiddleware()
 	e.Use(middL.CORS)
-	authorRepo := _authorRepo.NewMysqlAuthorRepository(dbConn)
-	ar := _articleRepo.NewMysqlArticleRepository(dbConn)
+	authorRepo := author.NewMysqlAuthorRepository(dbConn)
+	ar := article.NewMysqlArticleRepository(dbConn)
 
 	timeoutContext := time.Duration(viper.GetInt("context.timeout")) * time.Second
-	au := _articleUcase.NewArticleUsecase(ar, authorRepo, timeoutContext)
-	_articleHttpDelivery.NewArticleHandler(e, au)
+	au := article2.NewUsecase(ar, authorRepo, timeoutContext)
+	article3.NewArticleHandler(e, au)
 
 	log.Fatal(e.Start(viper.GetString("server.address")))
 }

@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"encoding/base64"
+    "encoding/base64"
 	"time"
 )
 

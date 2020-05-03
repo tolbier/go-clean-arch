@@ -1,7 +1,7 @@
 package middleware_test
 
 import (
-	"net/http"
+    "net/http"
 	test "net/http/httptest"
 	"testing"
 
@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/bxcodec/go-clean-arch/article/delivery/http/middleware"
+    "github.com/tolbier/go-clean-arch/delivery/http/middleware"
 )
 
 func TestCORS(t *testing.T) {
